@@ -109,7 +109,7 @@ class RegionsBundleServiceProvider extends ServiceProvider implements RouteableP
 	 */
 	public function map()
 	{
-		Route::namespace($this->getNamespace())
+		Route::namespace($this->getNamespaceForApp())
 			->domain(config('app.domain.app', null))
 			->as('naiveable.bundle.regions::region.')
 			->middleware('app')
