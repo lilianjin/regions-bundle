@@ -2,10 +2,14 @@
 
 namespace Naiveable\RegionsBundle;
 
-use Naiveable\Foundation\Bundle\BundleServiceProvider;
 use Naiveable\Foundation\Ofcold;
-use Naiveable\RegionsBundle\Region\Resources\Region;
 use Naiveable\Routing\Facades\Route;
+use Naiveable\Support\ServiceProvider;
+use Naiveable\RegionsBundle\Region\Resources\Region;
+use Naiveable\Support\Contracts\ConfigableProviderInterface;
+use Naiveable\Support\Contracts\MigrateableProviderInterface;
+use Naiveable\Support\Contracts\RouteableProviderInterface;
+use Naiveable\Support\Contracts\TranslatableProviderInterface;
 
 /**
  * class RegionsBundleServiceProvider
@@ -23,7 +27,10 @@ use Naiveable\Routing\Facades\Route;
  *
  * @copyright  Copyright (c) 2017-2019 Bill Li, Ofcold Institute of Technology. All rights reserved.
  */
-class RegionsBundleServiceProvider extends BundleServiceProvider
+class RegionsBundleServiceProvider extends ServiceProvider implements RouteableProviderInterface,
+																TranslatableProviderInterface,
+																MigrateableProviderInterface,
+																ConfigableProviderInterface
 {
 	/**
 	 * This namespace is applied to your controller routes.
@@ -33,6 +40,16 @@ class RegionsBundleServiceProvider extends BundleServiceProvider
 	 * @var string
 	 */
 	protected $namespace = 'Naiveable\RegionsBundle\Http\Controllers';
+
+	/**
+	 * Register any application services.
+	 *
+	 * @return void
+	 */
+	public function register(): void
+	{
+		$this->registerBundle('naiveable.bundle.regions', __DIR__);
+	}
 
 	/**
 	 * Bootstrap any package services.
@@ -90,7 +107,7 @@ class RegionsBundleServiceProvider extends BundleServiceProvider
 	 *
 	 * @return $this
 	 */
-	public function getRoutes()
+	public function map()
 	{
 		Route::namespace($this->getNamespace())
 			->domain(config('app.domain.app', null))
@@ -99,5 +116,52 @@ class RegionsBundleServiceProvider extends BundleServiceProvider
 			->group(function () {
 				Route::get('regions', 'RegionsController@index');
 			});
+	}
+
+	/**
+	 * Register configuration namespace any bundle services.
+	 *
+	 * @return void
+	 */
+	public function configRegister(): void
+	{
+		// Load package configuration.
+		$this->addNamespaceForConfig($this->bundle->getNamespace(), $this->bundle->getPath('resources/config'));
+	}
+
+	/**
+	 * Register view namespace any bundle services.
+	 *
+	 * @return void
+	 */
+	public function viewRegister(): void
+	{
+		// Add the view namespaces.
+		$this->addNamespaceForView($this->bundle->getNamespace(), $this->bundle->getPath('resources/views'));
+	}
+
+	/**
+	 * Register translation namespace any bundle services.
+	 *
+	 * @return void
+	 */
+	public function translatorRegister(): void
+	{
+		$path = $this->bundle->getPath('resources/lang');
+
+		// Load package translator.
+		$this->loadTranslationsFrom($path, $this->bundle->getNamespace());
+		$this->loadJsonTranslationsFrom($path);
+	}
+
+	/**
+	 * Register a database migrate files of the service provider.
+	 *
+	 * @return void
+	 */
+	public function migrateRegister(): void
+	{
+		// Register a database migration path.
+		$this->loadMigrationsFrom($this->bundle->getPath('database/migrations'));
 	}
 }
