@@ -6,10 +6,7 @@ use Naiveable\Foundation\Ofcold;
 use Naiveable\Routing\Facades\Route;
 use Naiveable\Support\ServiceProvider;
 use Naiveable\RegionsBundle\Region\Resources\Region;
-use Naiveable\Support\Contracts\ConfigableProviderInterface;
-use Naiveable\Support\Contracts\MigrateableProviderInterface;
 use Naiveable\Support\Contracts\RouteableProviderInterface;
-use Naiveable\Support\Contracts\TranslatableProviderInterface;
 
 /**
  * class RegionsBundleServiceProvider
@@ -27,10 +24,7 @@ use Naiveable\Support\Contracts\TranslatableProviderInterface;
  *
  * @copyright  Copyright (c) 2017-2019 Bill Li, Ofcold Institute of Technology. All rights reserved.
  */
-class RegionsBundleServiceProvider extends ServiceProvider implements RouteableProviderInterface,
-																TranslatableProviderInterface,
-																MigrateableProviderInterface,
-																ConfigableProviderInterface
+class RegionsBundleServiceProvider extends ServiceProvider implements RouteableProviderInterface
 {
 	/**
 	 * This namespace is applied to your controller routes.
@@ -49,6 +43,15 @@ class RegionsBundleServiceProvider extends ServiceProvider implements RouteableP
 	public function register(): void
 	{
 		$this->registerBundle('naiveable.bundle.regions', __DIR__);
+
+		// Load package configuration.
+		$this->addNamespaceForConfig($this->bundle->getNamespace(), $this->bundle->getPath('resources/config'));
+
+		// Add the view namespaces.
+		$this->addNamespaceForView($this->bundle->getNamespace(), $this->bundle->getPath('resources/views'));
+
+		// Register a database migration path.
+		$this->loadMigrationsFrom($this->bundle->getPath('database/migrations'));
 	}
 
 	/**
@@ -58,6 +61,8 @@ class RegionsBundleServiceProvider extends ServiceProvider implements RouteableP
 	 */
 	public function boot(): void
 	{
+		$this->translatorRegister();
+
 		$this->resources();
 
 		$this->cards();
@@ -119,28 +124,6 @@ class RegionsBundleServiceProvider extends ServiceProvider implements RouteableP
 	}
 
 	/**
-	 * Register configuration namespace any bundle services.
-	 *
-	 * @return void
-	 */
-	public function configRegister(): void
-	{
-		// Load package configuration.
-		$this->addNamespaceForConfig($this->bundle->getNamespace(), $this->bundle->getPath('resources/config'));
-	}
-
-	/**
-	 * Register view namespace any bundle services.
-	 *
-	 * @return void
-	 */
-	public function viewRegister(): void
-	{
-		// Add the view namespaces.
-		$this->addNamespaceForView($this->bundle->getNamespace(), $this->bundle->getPath('resources/views'));
-	}
-
-	/**
 	 * Register translation namespace any bundle services.
 	 *
 	 * @return void
@@ -152,16 +135,5 @@ class RegionsBundleServiceProvider extends ServiceProvider implements RouteableP
 		// Load package translator.
 		$this->loadTranslationsFrom($path, $this->bundle->getNamespace());
 		$this->loadJsonTranslationsFrom($path);
-	}
-
-	/**
-	 * Register a database migrate files of the service provider.
-	 *
-	 * @return void
-	 */
-	public function migrateRegister(): void
-	{
-		// Register a database migration path.
-		$this->loadMigrationsFrom($this->bundle->getPath('database/migrations'));
 	}
 }
