@@ -2,11 +2,12 @@
 
 namespace Naiveable\RegionsBundle;
 
+use Naiveable\Foundation\Domain;
 use Naiveable\Foundation\Ofcold;
-use Naiveable\Routing\Facades\Route;
-use Naiveable\Support\ServiceProvider;
 use Naiveable\RegionsBundle\Region\Resources\Region;
+use Naiveable\Routing\Facades\Route;
 use Naiveable\Support\Contracts\RouteableProviderInterface;
+use Naiveable\Support\ServiceProvider;
 
 /**
  * class RegionsBundleServiceProvider
@@ -115,7 +116,7 @@ class RegionsBundleServiceProvider extends ServiceProvider implements RouteableP
 	public function map()
 	{
 		Route::namespace($this->getNamespaceForApp())
-			->domain(config('app.domain.app', null))
+			->domain(Domain::route('api'))
 			->as('naiveable.bundle.regions::region.')
 			->middleware('app')
 			->group(function () {
