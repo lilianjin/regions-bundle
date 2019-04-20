@@ -4,10 +4,9 @@ namespace Naiveable\RegionsBundle\Region\Resources;
 
 use Naiveable\Fields\Image;
 use Naiveable\Fields\Slug;
-use Naiveable\Fields\Tabs\Tab;
+use Naiveable\Fields\Tabs;
 use Naiveable\Fields\Text;
 use Naiveable\Fields\Textarea;
-use Naiveable\Fields\Traits\Tabs as TraitsTabs;
 use Naiveable\Foundation\Resource;
 use Naiveable\Http\Request;
 use Naiveable\RegionsBundle\Region\RegionModel;
@@ -30,8 +29,6 @@ use Naiveable\RegionsBundle\Region\RegionModel;
  */
 class Region extends Resource
 {
-	use TraitsTabs;
-
 	/**
 	 * The model the resource corresponds to.
 	 *
@@ -72,29 +69,27 @@ class Region extends Resource
 	public function fields(Request $request)
 	{
 		return [
-			new Tab(__('Basic'), [
-				Image::make('Image', 'image'),
+			Image::make('Image', 'image'),
 
-				Text::make(__('Name'), 'name')
-					->slug('Slug')
-					->sortable()
-					->rules('required', 'max:20'),
+			Text::make(__('Name'), 'name')
+				->slug('Slug')
+				->sortable()
+				->rules('required', 'max:20'),
 
-				Slug::make('slug')
-					->onlyOnForms()
-					->hideWhenUpdating()
-					->rules('required', 'max:100')
-					->creationRules(['unique:regions_regions,slug']),
+			Slug::make('slug')
+				->onlyOnForms()
+				->hideWhenUpdating()
+				->rules('required', 'max:100')
+				->creationRules(['unique:regions_regions,slug']),
 
-				Text::make(__('Slogan'), 'slogan'),
+			Text::make(__('Slogan'), 'slogan'),
 
-				Textarea::make(__('Description'), 'description'),
-			]),
+			Textarea::make(__('Description'), 'description'),
 
-			new Tab(__('Meta'), [
+			new Panel('Meta', [
 				Text::make('Meta title', 'meta_title')->hideFromIndex(),
 				Text::make('Meta description', 'meta_description')->hideFromIndex(),
-			]),
+			])
 
 		];
 	}
