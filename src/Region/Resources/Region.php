@@ -7,6 +7,7 @@ use Naiveable\Fields\Slug;
 use Naiveable\Fields\Tabs;
 use Naiveable\Fields\Text;
 use Naiveable\Fields\Textarea;
+use Naiveable\Foundation\Panel;
 use Naiveable\Foundation\Resource;
 use Naiveable\Http\Request;
 use Naiveable\RegionsBundle\Region\RegionModel;
