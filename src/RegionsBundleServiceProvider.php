@@ -2,7 +2,7 @@
 
 namespace Naiveable\RegionsBundle;
 
-use Naiveable\Foundation\Domain;
+use Naiveable\Foundation\Http\Domain;
 use Naiveable\Foundation\Ofcold;
 use Naiveable\RegionsBundle\Region\Resources\Region;
 use Naiveable\Routing\Facades\Route;
